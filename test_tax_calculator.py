@@ -62,6 +62,13 @@ def jointtax(salary1, salary2):
 
 
 def testTax(salary1, salary2):
+    try:
+        salary1 = int(salary1)
+        salary2 = int(salary2)
+    except ValueError:
+        return "Please enter a valid number"
+    if (salary1 < 0) or (salary2 < 0):
+        return "Please enter a valid number"
     taxh, mpfhus = septax(salary1)
     taxw, mpfwife = septax(salary2)
     taxm = jointtax(salary1, salary2)
@@ -79,22 +86,31 @@ class TestTaxCalculation(unittest.TestCase):
     def test_tax_calculator(self):
         # Test for married couple with both earning below basic allowance
         self.assertEqual(testTax(
-            100000, 100000), (0, 5000, 0, 5000, 0, 'Both assessments are the same'))
+            "100000", "100000"), (0, 5000, 0, 5000, 0, 'Both assessments are the same'))
         # Test for married couple with one earning above basic allowance
         self.assertEqual(testTax(
-            100000, 500000), (0, 5000, 41500, 18000, 35210, "Married assessment is more beneficial"))
+            "100000", "500000"), (0, 5000, 41500, 18000, 35210, "Married assessment is more beneficial"))
         # Test for married couple with both earning above basic allowance
         self.assertEqual(testTax(
-            500000, 500000), (41500, 18000, 41500, 18000, 101000, "Separate assessment is more beneficial"))
+            "500000", "500000"), (41500, 18000, 41500, 18000, 101000, "Separate assessment is more beneficial"))
         # Test for married couple with both earning above standard rate zone
         self.assertEqual(testTax(
-            3500000, 3500000), (522300, 18000, 522300, 18000, 1044600, "Both assessments are the same"))
+            "3500000", "3500000"), (522300, 18000, 522300, 18000, 1044600, "Both assessments are the same"))
         # Test for married couple with one earning above standard rate zone
         self.assertEqual(testTax(
-            2500000, 1500000), (372300, 18000, 211500, 18000, 594600, "Separate assessment is more beneficial"))
+            "2500000", "1500000"), (372300, 18000, 211500, 18000, 594600, "Separate assessment is more beneficial"))
         # Test for married couple with non earning above standard rate zone but the joint income is above standard rate zone
         self.assertEqual(testTax(
-            1800000, 1500000), (262500, 18000, 211500, 18000, 489600, "Separate assessment is more beneficial"))
+            "1800000", "1500000"), (262500, 18000, 211500, 18000, 489600, "Separate assessment is more beneficial"))
+        # Test for invalid input (negative number)
+        self.assertEqual(testTax(
+            "-100000", "100000"), "Please enter a valid number")
+        # Test for invalid input (string)
+        self.assertEqual(testTax(
+            "abc", "100000"), "Please enter a valid number")
+        # Test for invalid input (float)
+        self.assertEqual(testTax(
+            "100000.5", "100000"), "Please enter a valid number")
 
 
 if __name__ == '__main__':
